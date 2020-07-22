@@ -16,7 +16,6 @@ public class TestJedis {
 
     @Test
     public void testMethod() {
-
         JedisPool pool = new JedisPool("204.44.85.50", 6700);
         Jedis resource = pool.getResource();
         String set = resource.set("123", "321");

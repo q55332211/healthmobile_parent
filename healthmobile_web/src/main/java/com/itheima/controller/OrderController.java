@@ -47,21 +47,24 @@ public class OrderController {
                 String code = jedis.get(telephone);
 
                 if (validateCode.equals(code)) {
-                    ///查询日期是否可以约  查询之前要进行日期转换
-                    String orderDate = map.get("orderDate").toString();
-                    String date = DateFormatUtil.dateFormat("yyyy-MM-dd", new Date(orderDate));
-                    System.out.println(date);
+                    //删除redis缓存验证码 设置生存时间==1？
+                    //jedis.del(telephone);
                     // 交给service处理   //todo 未完成 休息下
-                    ///插入数据到订单
-                    //如果预约成功就发短信
+                    map.put("orderTpye", Order.ORDERTYPE_WEIXIN);
                     Result result = this.orderService.sumbit(map);
-                    return new Result(true, MessageConstant.ORDERSETTING_SUCCESS);
+                    ///插入数据到订单
+                    if (result.isFlag()) {
+                        //如果预约成功就发短信
+                        return new Result(true, MessageConstant.ORDERSETTING_SUCCESS);
+
+                    }
+
                 }
 
             }
 
         } catch (Exception e) {
-
+            e.printStackTrace();
         } finally {
             if (jedis != null) {
                 jedis.close();
