@@ -45,22 +45,18 @@ public class OrderController {
                 String validateCode = map.get("validateCode").toString();
                 jedis = jedisPool.getResource();
                 String code = jedis.get(telephone);
-
                 if (validateCode.equals(code)) {
-                    //删除redis缓存验证码 设置生存时间==1？
-                    //jedis.del(telephone);
-                    // 交给service处理   //todo 未完成 休息下
+                    //删除redis缓存验证码 设置生存时间==1？ //todo
+                    //  jedis.del(telephone);
+                    // 交给service处理
                     map.put("orderTpye", Order.ORDERTYPE_WEIXIN);
                     Result result = this.orderService.sumbit(map);
                     ///插入数据到订单
                     if (result.isFlag()) {
-                        //如果预约成功就发短信
-                        return new Result(true, MessageConstant.ORDERSETTING_SUCCESS);
-
+                        //todo 如果预约成功就发短信
+                        return result;
                     }
-
                 }
-
             }
 
         } catch (Exception e) {
