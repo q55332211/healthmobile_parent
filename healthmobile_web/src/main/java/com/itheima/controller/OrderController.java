@@ -6,6 +6,7 @@ import com.itheima.entity.Result;
 import com.itheima.pojo.Order;
 import com.itheima.service.OrderService;
 import com.ithiema.utlis.DateFormatUtil;
+import com.ithiema.utlis.RedisMessageConstant;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,6 +38,7 @@ public class OrderController {
     @RequestMapping("/sumbit")
     @ResponseBody
     public Result sumbit(@RequestBody Map map) {
+        Result result = new Result(false, MessageConstant.ORDERSETTING_FAIL);
         Jedis jedis = null;
         try {
             if (map != null) {
@@ -44,13 +46,13 @@ public class OrderController {
                 String telephone = map.get("telephone").toString();
                 String validateCode = map.get("validateCode").toString();
                 jedis = jedisPool.getResource();
-                String code = jedis.get(telephone);
+                String code = jedis.get(telephone + RedisMessageConstant.SENDTYPE_ORDER);
                 if (validateCode.equals(code)) {
                     //删除redis缓存验证码 设置生存时间==1？ //todo
-                    //  jedis.del(telephone);
+                    //  jedis.del(telephone+ RedisMessageConstant.SENDTYPE_ORDER);
                     // 交给service处理
                     map.put("orderTpye", Order.ORDERTYPE_WEIXIN);
-                    Result result = this.orderService.sumbit(map);
+                    result = this.orderService.sumbit(map);
                     ///插入数据到订单
                     if (result.isFlag()) {
                         //todo 如果预约成功就发短信
@@ -66,8 +68,30 @@ public class OrderController {
                 jedis.close();
             }
         }
-        return new Result(false, MessageConstant.ORDERSETTING_FAIL);
+        return result;
 
     }
+
+    /**
+     * 根据id查询
+     *
+     * @param id
+     * @return
+     */
+
+    @ResponseBody
+    @RequestMapping("/getOrderById")
+    public Result getOrderById(Integer id) {
+        try {
+            Map map = this.orderService.getOrderById(id);
+            if (map != null) {
+                return new Result(false, MessageConstant.QUERY_ORDER_SUCCESS, map);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new Result(false, MessageConstant.QUERY_ORDER_FAIL);
+    }
+
 
 }

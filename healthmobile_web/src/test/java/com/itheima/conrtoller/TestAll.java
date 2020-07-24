@@ -25,17 +25,12 @@ import redis.clients.jedis.ShardedJedisPool;
 public class TestAll {
 
     @Autowired
-    private SetmealController setmealController;
-
-
-    @Autowired
     private JedisPool jedisPool;
 
 
     @Test
     public void testFunction() {
-        Result result = setmealController.findById(14);
-        System.out.println(JSONObject.toJSONString(result.getData()));
+
     }
 
     @Test
@@ -53,14 +48,14 @@ public class TestAll {
         //  Jedis jedis = jedisPool.getResource();
     /*    String string = jedis.get("123");
         System.out.println(string);*/
-        Jedis jedis = null;
+   /*     Jedis jedis = null;
         try {
             jedis = jedisPool.getResource();
             String set = jedis.set("13680553181", "5566");
             System.out.println(set);
         } finally {
             jedis.close();
-        }
+        }*/
     /*    ShardedJedis jedis = shardedJedisPool.getResource();
         System.out.println(jedis.get("123"));*/
 
