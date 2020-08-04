@@ -34,25 +34,26 @@ public class LoginController {
 
     /**
      * 用户短信登录
+     *
      * @param map
      * @param response
      * @return
      */
     @RequestMapping("/check")
-    public Result check(@RequestBody Map map, HttpServletResponse response) {
+    public Result check(@RequestBody Map<String, String> map, HttpServletResponse response) {
         try {
             Jedis jedis = jedisPool.getResource();
-            String phone = map.get("telephone").toString();
+            String phone = map.get("telephone");
             String key = phone + RedisMessageConstant.SENDTYPE_LOGIN;
-            String validateCode = jedis.get(key);
-            String code = map.get("validateCode").toString();
-            //判断验证码是否正确
-            if (!validateCode.equals(code)) {
+            String code = map.get("validateCode");
+            //判断验证码是否正确 todo 测试不做校验
+           /*   String validateCode = jedis.get(key);
+                 if (!validateCode.equals(code)) {
                 //不正确返回错误信息
                 return new Result(false, MessageConstant.VALIDATECODE_ERROR);
-            }
+            }*/
             //正确删除验证码
-            jedis.del(key);
+            //   jedis.del(key);
             //根据手机号码判断是否已经注册
             Member member = this.memberService.findByPhone(phone);
             if (member == null) {

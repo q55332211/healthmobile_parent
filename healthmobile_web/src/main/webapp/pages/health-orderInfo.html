@@ -36,7 +36,7 @@
     <div class="contentBox">
         <div class="card">
             <div class="project-img">
-                <img src="../img/widget-detail.png" width="100%" height="100%"/>
+                <img :src="setmeal.img" width="100%" height="100%"/>
             </div>
             <div class="project-text">
                 <h4 class="tit">{{setmeal.name}}</h4>
@@ -133,14 +133,8 @@
 
     </div>
 </div>
-<!-- 页面 css js -->
-<!-- <link rel="stylesheet" href="./../../plugins/zepto/zepto.mtimer.css">
-<script src="./../../plugins/jquery/dist/jquery.min.js"></script>
-<script src="./../../plugins/zepto/zepto.js"></script>
-<script src="./../../plugins/zepto/zepto.mtimer.js"></script> -->
 
 <script src="../plugins/datapicker/datePicker.js"></script>
-
 <script>
     export default {
         data() {
@@ -219,7 +213,6 @@
 
             //提交预约
             submitOrder() {
-                // this.orderInfo.orderDate = this.orderInfo.orderDate + 1;
                 if (!checkIdCard(this.orderInfo.idCard)) {
                     this.$message.error("请输入正确身份证");
                     return false;

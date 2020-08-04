@@ -67,14 +67,15 @@ public class ValidateCodeController {
         Jedis jedis = null;
         try {
             Integer code = ValidateCodeUtils.generateValidateCode(4);
-            //发送验证码
-            SMSUtils.sendShortMessage(SMSUtils.VALIDATE_CODE, phone, code.toString());
-            jedis = jedisPool.getResource();
             jedis.set(phone + RedisMessageConstant.SENDTYPE_LOGIN, code.toString());
             jedis.expire(phone + RedisMessageConstant.SENDTYPE_LOGIN, 300);
+            //发送验证码
+            //SMSUtils.sendShortMessage(SMSUtils.VALIDATE_CODE, phone, code.toString());
+            jedis = jedisPool.getResource();
             return new Result(true, MessageConstant.SEND_VALIDATECODE_SUCCESS);
         } catch (Exception e) {
             e.printStackTrace();
+
         } finally {
             if (jedis != null) {
                 jedis.close();
